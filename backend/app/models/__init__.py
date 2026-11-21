@@ -10,6 +10,7 @@ from app.models.workflow_edge import WorkflowEdge
 from app.models.execution import Execution
 from app.models.node_execution import NodeExecution
 from app.models.execution_log import ExecutionLog
+from app.models.approval import Approval
 
 __all__ = [
     "User",
@@ -24,4 +25,5 @@ __all__ = [
     "Execution",
     "NodeExecution",
     "ExecutionLog",
+    "Approval",
 ]
