@@ -6,6 +6,7 @@ from app.models.model_configuration import ModelConfiguration
 from app.models.workflow import Workflow
 from app.models.workflow_version import WorkflowVersion
 from app.models.workflow_node import WorkflowNode
+from app.models.workflow_edge import WorkflowEdge
 
 __all__ = [
     "User",
@@ -16,4 +17,5 @@ __all__ = [
     "Workflow",
     "WorkflowVersion",
     "WorkflowNode",
+    "WorkflowEdge",
 ]
