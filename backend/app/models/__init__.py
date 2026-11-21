@@ -12,6 +12,7 @@ from app.models.node_execution import NodeExecution
 from app.models.execution_log import ExecutionLog
 from app.models.approval import Approval
 from app.models.usage_record import UsageRecord
+from app.models.audit_log import AuditLog
 
 __all__ = [
     "User",
@@ -28,4 +29,5 @@ __all__ = [
     "ExecutionLog",
     "Approval",
     "UsageRecord",
+    "AuditLog",
 ]
