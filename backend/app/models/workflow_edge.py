@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import (
     CheckConstraint,
     ForeignKeyConstraint,
+    Index,
     String,
     UniqueConstraint,
     Uuid,
@@ -46,6 +47,11 @@ class WorkflowEdge(BaseModel):
             ],
             ondelete="CASCADE",
             name="fk_workflow_edges_target_node",
+        ),
+        Index(
+            "ix_workflow_edges_target_node",
+            "workflow_version_id",
+            "target_node_key",
         ),
     )
 

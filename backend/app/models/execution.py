@@ -1,3 +1,4 @@
+
 import uuid
 from datetime import datetime
 
@@ -5,8 +6,10 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    ForeignKeyConstraint,
     String,
     Text,
+    UniqueConstraint,
     Uuid,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -31,6 +34,20 @@ class Execution(BaseModel):
             "OR completed_at >= started_at",
             name="valid_execution_timestamps",
         ),
+        ForeignKeyConstraint(
+            ["workflow_version_id", "workspace_id"],
+            [
+                "workflow_versions.id",
+                "workflow_versions.workspace_id",
+            ],
+            ondelete="RESTRICT",
+            name="fk_executions_workflow_version_workspace",
+        ),
+        UniqueConstraint(
+            "id",
+            "workflow_version_id",
+            name="uq_executions_id_version",
+        ),
     )
 
     workspace_id: Mapped[uuid.UUID] = mapped_column(
@@ -42,7 +59,6 @@ class Execution(BaseModel):
 
     workflow_version_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("workflow_versions.id", ondelete="RESTRICT"),
         nullable=False,
         index=True,
     )

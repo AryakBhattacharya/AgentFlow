@@ -2,6 +2,7 @@ import uuid
 
 from sqlalchemy import (
     CheckConstraint,
+    UniqueConstraint,
     ForeignKey,
     String,
     Text,
@@ -21,6 +22,11 @@ class Workflow(BaseModel):
         CheckConstraint(
             "status IN ('draft', 'published', 'archived')",
             name="valid_workflow_status",
+        ),
+        UniqueConstraint(
+            "id",
+            "workspace_id",
+            name="uq_workflows_id_workspace",
         ),
     )
 

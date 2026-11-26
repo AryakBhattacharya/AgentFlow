@@ -1,7 +1,9 @@
+
 import uuid
 
 from sqlalchemy import (
-    ForeignKey,
+    CheckConstraint,
+    ForeignKeyConstraint,
     Integer,
     String,
     Text,
@@ -25,13 +27,31 @@ class WorkflowVersion(BaseModel):
             "version_number",
             name="uq_workflow_versions_workflow_version",
         ),
+        UniqueConstraint(
+            "id",
+            "workspace_id",
+            name="uq_workflow_versions_id_workspace",
+        ),
+        ForeignKeyConstraint(
+            ["workflow_id", "workspace_id"],
+            ["workflows.id", "workflows.workspace_id"],
+            ondelete="CASCADE",
+            name="fk_workflow_versions_workflow_workspace",
+        ),
+        CheckConstraint(
+            "status IN ('draft', 'published', 'archived')",
+            name="valid_workflow_version_status",
+        ),
     )
 
     workflow_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("workflows.id", ondelete="CASCADE"),
         nullable=False,
-        index=True,
+    )
+
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        nullable=False,
     )
 
     version_number: Mapped[int] = mapped_column(

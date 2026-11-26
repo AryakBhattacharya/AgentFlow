@@ -1,10 +1,12 @@
+
 import uuid
 from datetime import datetime
 
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
-    ForeignKey,
+    ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     Text,
@@ -23,12 +25,23 @@ class NodeExecution(BaseModel):
     __tablename__ = "node_executions"
 
     __table_args__ = (
-        # Each attempt of a node must be uniquely identifiable.
         UniqueConstraint(
             "execution_id",
             "workflow_node_id",
             "attempt_number",
             name="uq_node_executions_attempt",
+        ),
+        ForeignKeyConstraint(
+            ["execution_id", "workflow_version_id"],
+            ["executions.id", "executions.workflow_version_id"],
+            ondelete="CASCADE",
+            name="fk_node_executions_execution_version",
+        ),
+        ForeignKeyConstraint(
+            ["workflow_node_id", "workflow_version_id"],
+            ["workflow_nodes.id", "workflow_nodes.workflow_version_id"],
+            ondelete="RESTRICT",
+            name="fk_node_executions_node_version",
         ),
         CheckConstraint(
             "status IN ('pending', 'running', 'paused', "
@@ -44,19 +57,31 @@ class NodeExecution(BaseModel):
             "OR completed_at >= started_at",
             name="valid_node_execution_timestamps",
         ),
+        Index(
+            "ix_node_executions_execution_version",
+            "execution_id",
+            "workflow_version_id",
+        ),
+        Index(
+            "ix_node_executions_node_version",
+            "workflow_node_id",
+            "workflow_version_id",
+        ),
     )
 
     execution_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("executions.id", ondelete="CASCADE"),
         nullable=False,
     )
 
     workflow_node_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("workflow_nodes.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
+    )
+
+    workflow_version_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        nullable=False,
     )
 
     attempt_number: Mapped[int] = mapped_column(

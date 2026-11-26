@@ -3,9 +3,9 @@ import uuid
 from sqlalchemy import (
     CheckConstraint,
     ForeignKey,
+    UniqueConstraint,
     Integer,
     String,
-    UniqueConstraint,
     Uuid,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -29,6 +29,11 @@ class WorkflowNode(BaseModel):
             "node_type IN ('start', 'agent', 'llm', 'tool', "
             "'condition', 'human_approval', 'delay', 'output')",
             name="valid_workflow_node_type",
+        ),
+        UniqueConstraint(
+            "id",
+            "workflow_version_id",
+            name="uq_workflow_nodes_id_version",
         ),
     )
 
