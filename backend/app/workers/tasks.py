@@ -8,3 +8,9 @@ def ping_task():
         "status": "success",
         "message": "Celery worker is operational"
     }
+
+@celery_app.task(name="agentflow.fail")
+def fail_task():
+    """Simulate a task failure for error-handling tests."""
+
+    raise RuntimeError("Intentional failure for testing")

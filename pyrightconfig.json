@@ -1,0 +1,7 @@
+
+{
+    "include": ["backend"],
+    "extraPaths": ["backend"],
+    "typeCheckingMode": "basic",
+    "reportMissingTypeStubs": "none"
+}
